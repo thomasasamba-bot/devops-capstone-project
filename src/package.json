@@ -1,0 +1,22 @@
+{
+  "name": "devops-capstone-api",
+  "version": "1.0.0",
+  "description": "AI-powered e-commerce platform - DevOps Capstone",
+  "main": "app/main.js",
+  "scripts": {
+    "start": "node app/main.js",
+    "dev": "nodemon app/main.js",
+    "test": "jest"
+  },
+  "author": "Thomas Asamba",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.6.1",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1"
+  }
+}

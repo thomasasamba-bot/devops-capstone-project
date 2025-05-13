@@ -1,0 +1,62 @@
+name: DevOps Capstone CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Node.js dependencies
+        run: |
+          cd src
+          npm ci
+
+      - name: Run Node.js tests
+        run: |
+          cd src
+          npm test
+
+  python-service-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install Python dependencies
+        run: |
+          cd microservices/recommender
+          pip install -r requirements.txt
+
+      - name: Lint with flake8
+        run: |
+          cd microservices/recommender
+          flake8 .
+
+      - name: Run tests
+        run: |
+          cd microservices/recommender
+          pytest
