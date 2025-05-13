@@ -1,0 +1,153 @@
+### ==== Node.js ==== ###
+# Dependencies
+node_modules/
+.pnpm/
+.yarn/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Build artifacts
+dist/
+build/
+.next/
+out/
+.nuxt/
+.serverless/
+.vite/
+.cache/
+.turbo/
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env*.local
+.env.development
+.env.production
+
+# Testing
+coverage/
+.nyc_output/
+jest-coverage/
+__snapshots__/
+.vitest/
+*.lcov
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+### ==== Python ==== ###
+__pycache__/
+*.py[cod]
+*.so
+.python-version
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+### ==== AI/ML Models ==== ###
+models/
+*.h5
+*.pkl
+*.joblib
+*.pt
+*.onnx
+*.tflite
+mlruns/
+wandb/
+data/processed/
+!data/raw/README.md
+
+### ==== Docker/Kubernetes ==== ###
+docker-compose.override.yml
+docker-compose.env
+.dockerignore
+**/.dockercontext
+minikube/
+.kube/
+**/*.kubeconfig
+
+### ==== Terraform ==== ###
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+terraform.rc
+*.terraform.lock.hcl
+
+### ==== CI/CD ==== ###
+.cache/
+.coverage
+test-reports/
+junit.xml
+*.codecov
+.codecov.yml
+
+### ==== Frontend ==== ###
+.next/
+.nuxt/
+.vuepress/dist/
+.cache/
+.turbo/
+storybook-static/
+*.css.map
+*.js.map
+
+### ==== Secrets ==== ###
+secrets.yml
+credentials.json
+*.key
+*.pem
+*.cert
+*.pub
+*.gpg
+*.secret
+**/.vault/
+
+### ==== System Files ==== ###
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+._*
+.Spotlight-V100
+.Trashes
+
+### ==== Editor/IDE ==== ###
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.code-workspace
+
+### ==== Temporary Files ==== ###
+*.tmp
+*.temp
+*~
+*.bak
+*.backup
+*.sav
