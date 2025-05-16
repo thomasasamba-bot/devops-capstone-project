@@ -13,25 +13,12 @@ spec:
         app: recommendation
     spec:
       containers:
-      - name: recommender
-        image: registry/recommendation-service:latest
-        ports:
-        - containerPort: 5000
-        env:
-        - name: DB_HOST
-          value: "postgres-service"
-        - name: REDIS_HOST
-          value: "redis-service"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: recommendation-service
-spec:
-  selector:
-    app: recommendation
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5000
-  type: LoadBalancer
+        - name: recommender
+          image: registry/recommendation-service:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DB_HOST
+              value: "postgres-service"
+            - name: REDIS_HOST
+              value: "redis-service"

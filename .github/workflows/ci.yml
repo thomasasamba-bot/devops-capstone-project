@@ -1,0 +1,127 @@
+name: DevOps Capstone CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: 18.x
+  COVERAGE_THRESHOLD: 80
+
+jobs:
+  node-ci:
+    name: Lint, Test, and Coverage for Node.js
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js with caching
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: src/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: src
+        run: npm run lint
+
+      - name: Run Prettier check
+        working-directory: src
+        run: npm run format:check
+
+      - name: Run tests with coverage
+        working-directory: src
+        run: npm test -- --coverage
+
+      - name: Enforce coverage threshold
+        working-directory: src
+        run: |
+          coverage=$(npx coverage-percentage ./coverage/lcov.info --lcov)
+          echo "Coverage: $coverage%"
+          if (( $(echo "$coverage < ${{ env.COVERAGE_THRESHOLD }}" | bc -l) )); then
+            echo "❌ Coverage ($coverage%) below ${{ env.COVERAGE_THRESHOLD }}% threshold"
+            exit 1
+          else
+            echo "✅ Coverage ($coverage%) meets threshold"
+          fi
+
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files
+
+  python-ci:
+    name: Python Linting and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        working-directory: microservices/recommender
+        run: pip install -r requirements.txt
+
+      - name: Lint with flake8
+        working-directory: microservices/recommender
+        run: flake8 .
+
+      - name: Run tests
+        working-directory: microservices/recommender
+        run: pytest
+
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files
+
+  security-scan:
+    name: Snyk Security Scan
+    needs: [node-ci, python-ci]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Run Snyk Monitor
+        uses: snyk/actions/node@master
+        with:
+          command: monitor
+          args: --all-projects --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  notify:
+    name: Notify Slack
+    needs: [node-ci, python-ci, security-scan]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Send Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: CI Pipeline Summary
+          SLACK_MESSAGE: |
+            *Workflow*: ${{ github.workflow }} #${{ github.run_number }}
+            *Branch*: ${{ github.ref }}
+            *Status*: ${{ job.status }}
+            *Commit*: ${{ github.sha }}
+          SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}

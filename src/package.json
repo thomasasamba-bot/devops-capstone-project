@@ -6,7 +6,12 @@
   "scripts": {
     "start": "node app/main.js",
     "dev": "nodemon app/main.js",
-    "test": "jest"
+    "test": "jest --coverage",
+    "lint": "eslint . --ext .js",
+    "lint:check": "eslint . --ext .js --quiet",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "coverage": "npx coverage-percentage ./coverage/lcov.info --lcov"
   },
   "author": "Thomas Asamba",
   "license": "MIT",
@@ -17,6 +22,9 @@
   "devDependencies": {
     "jest": "^29.6.1",
     "supertest": "^6.3.3",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "coverage-percentage": "^1.1.3"
   }
 }
